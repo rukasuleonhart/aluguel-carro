@@ -4,10 +4,10 @@ from pydantic import BaseModel, Field, EmailStr
 from .car import Car_Schema
 from .rental import Rental_Schema
 
-# Classe base com orm_mode ativado para permitir a conversão de modelos ORM para Pydantic
+# Classe base com from_attributes ativado para permitir a conversão de modelos ORM para Pydantic
 class BaseSchema(BaseModel):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class User_Public_Schema(BaseSchema):
     nome: str

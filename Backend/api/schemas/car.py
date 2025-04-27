@@ -1,10 +1,10 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
-# Classe base com orm_mode ativado para permitir a conversão de modelos ORM para Pydantic
+# Classe base com from_attributes ativado para permitir a conversão de modelos ORM para Pydantic
 class BaseSchema(BaseModel):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class Car_Schema(BaseSchema):
     id: int
