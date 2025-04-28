@@ -10,5 +10,6 @@ class User(Base): # Herdando de Base para usar o SQLAlchemy ORM
     nome: Mapped[str]
     email: Mapped[str] = mapped_column(unique=True)
     telefone: Mapped[str] = mapped_column(unique=True)
+    senha: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())

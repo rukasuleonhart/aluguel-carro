@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     DB_HOST: str
-    DB_PORT: str
+    DB_PORT: int
     POSTGRES_DB: str
 
     @property

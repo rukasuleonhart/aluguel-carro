@@ -32,6 +32,7 @@ def criar_usuario(usuario: User_Create_Schema, db: Session = Depends(get_db)):
         nome=usuario.nome,
         email=usuario.email,
         telefone=usuario.telefone,
+        
     )
 
     db.add(novo_usuario)
