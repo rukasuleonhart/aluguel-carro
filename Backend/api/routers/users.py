@@ -1,10 +1,10 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
-from schemas import User_Create_Schema, User_Public_Schema
+from schemas import User_Create_Schema, User_Public_Schema, Users_List
 from models import User
 from database import get_db
 
@@ -39,3 +39,15 @@ def criar_usuario(usuario: User_Create_Schema, db: Session = Depends(get_db)):
     db.refresh(novo_usuario)
 
     return novo_usuario
+
+@router.get("/", response_model=Users_List)
+def retornar_usuarios(
+    db: Session = Depends(get_db),
+    offset: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1)
+):
+    listar_usuarios = db.scalars(
+        select(User).offset(offset).limit(limit)
+    ).all()
+
+    return {"users": users}
