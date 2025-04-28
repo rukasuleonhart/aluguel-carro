@@ -8,11 +8,7 @@ A ideia principal do projeto é permitir que usuários possam listar seus carros
 
 ## Funcionalidades
 
-- Cadastro de carros para aluguel - 🔄️ Em desenvolvimento.
-- Busca e filtro de carros disponíveis - 🔄️ Em desenvolvimento.
-- Aluguel de carros entre usuários - 🔄️ Em desenvolvimento.
-- Pagamento e gerenciamento de reservas - 🔄️ Em desenvolvimento.
-- Perfil de usuário (locatário e locador) - 🔄️ Em desenvolvimento.
+- Rota de Usuários (CRUD)
 
 ## Tecnologias Utilizadas
 
