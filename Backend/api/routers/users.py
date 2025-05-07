@@ -1,13 +1,13 @@
 from http import HTTPStatus
 ##########################################################################################################################
-#                         📕 B I B L I O T E C A S       E X T E R N A S                                                                
+#                             📕 B I B L I O T E C A S       E X T E R N A S                                                                
 ##########################################################################################################################
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 ##########################################################################################################################
-#                                          ⬇️ I M P O R T E S                                                     
+#                                            ⬇️ I M P O R T E S                                                     
 ##########################################################################################################################
 from schemas import User_Create_Schema, User_Public_Schema, Users_List
 from models import User
@@ -16,7 +16,7 @@ from database import get_db
 router = APIRouter(prefix="/users", tags=["👤 Usuários"])
 
 ##########################################################################################################################
-#                                             ✉️ P O S T                                                                
+#                                                ✉️ P O S T                                                                
 ##########################################################################################################################
 @router.post("/", response_model=User_Public_Schema)
 def criar_usuario(usuario: User_Create_Schema, db: Session = Depends(get_db)):
@@ -50,7 +50,7 @@ def criar_usuario(usuario: User_Create_Schema, db: Session = Depends(get_db)):
     return novo_usuario
 
 ##########################################################################################################################
-#                                             🔍 G E T                                                                   
+#                                                  🔍 G E T                                                                   
 ##########################################################################################################################
 @router.get("/", response_model=Users_List)
 def buscar_usuarios(
@@ -65,7 +65,7 @@ def buscar_usuarios(
     return {"users": listar_usuarios}
 
 ##########################################################################################################################
-#                                             🔄️ P U T                                                                  
+#                                                  🔄️ P U T                                                                  
 ##########################################################################################################################
 @router.put("/{user_id}", response_model=User_Public_Schema)
 def atualizar_usuario(user_id: int, usuario: User_Create_Schema, db: Session = Depends(get_db)):
@@ -107,7 +107,7 @@ def atualizar_usuario(user_id: int, usuario: User_Create_Schema, db: Session = D
     return db_user
 
 ##########################################################################################################################
-#                                            🗑️ Delete                                                                 
+#                                                  🗑️ Delete                                                                 
 ##########################################################################################################################
 @router.delete("/{user_id}", response_model=User_Public_Schema)
 def excluir_usuario(user_id: int, db: Session = Depends(get_db)):
