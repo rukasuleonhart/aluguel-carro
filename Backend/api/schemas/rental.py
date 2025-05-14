@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 from datetime import datetime
+from pydantic.config import ConfigDict
 
 # Classe base com from_attributes ativado para permitir a conversão de modelos ORM para Pydantic
 class BaseSchema(BaseModel):
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class Rental_Schema(BaseSchema):
     id: int

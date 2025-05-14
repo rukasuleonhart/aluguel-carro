@@ -1,13 +1,13 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field, EmailStr
+from pydantic.config import ConfigDict
 
 from .car import Car_Schema
 from .rental import Rental_Schema
 
 # Classe base com from_attributes ativado para permitir a conversão de modelos ORM para Pydantic
 class BaseSchema(BaseModel):
-    class Config:
-        from_attributes = True
+   model_config = ConfigDict(from_attributes=True)
 
 class User_Public_Schema(BaseSchema):
     nome: str

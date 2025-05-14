@@ -5,6 +5,6 @@ app = FastAPI(title="Sistema de Aluguel de Carros")
 
 app.include_router(users.router)
 
-@app.route("/")
+@app.get("/")
 def pagina_inicial():
     return "Bem vindo a página inicial!"
