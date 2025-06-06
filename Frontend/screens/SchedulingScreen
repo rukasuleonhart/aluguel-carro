@@ -1,0 +1,173 @@
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { Ionicons } from "@expo/vector-icons";
+import DropDownPicker from "react-native-dropdown-picker";
+import { useRentalStore } from "../store/rentalStore";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Car } from "../types/car";
+
+type SchedulingRouteProp = RouteProp<RootStackParamList, "Scheduling">;
+
+const SchedulingScreen = () => {
+  const [showPicker, setShowPicker] = useState<"start" | "end" | null>(null);
+  const [open, setOpen] = useState(false);
+  const [rentalDays, setRentalDays] = useState(1);
+  const [items, setItems] = useState([
+    { label: "1 Dia", value: 1 },
+    { label: "2 Dias", value: 2 },
+    { label: "3 Dias", value: 3 },
+    { label: "4 Dias", value: 4 },
+    { label: "5 Dias", value: 5 },
+  ]);
+
+  const { startDate, endDate, setStartDate, setEndDate } = useRentalStore();
+
+  // Tipagem mais específica para navigation
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "Scheduling">>();
+  const route = useRoute<SchedulingRouteProp>();
+
+  // Aqui assume que car sempre existe (obrigatório na rota)
+  const car: Car = route.params.car;
+
+  // Se car não existir (por algum motivo), mostra mensagem
+  if (!car) {
+    return (
+      <SafeAreaView className="flex-1 justify-center items-center bg-white">
+        <Text className="text-lg font-semibold">Carro não encontrado.</Text>
+        <Pressable
+          className="mt-4 px-4 py-2 bg-primary rounded"
+          onPress={() => navigation.goBack()}
+        >
+          <Text className="text-white">Voltar</Text>
+        </Pressable>
+      </SafeAreaView>
+    );
+  }
+
+  useEffect(() => {
+    if (startDate) {
+      const newEndDate = new Date(startDate);
+      newEndDate.setDate(newEndDate.getDate() + rentalDays - 1);
+      setEndDate(newEndDate);
+    }
+  }, [rentalDays, startDate]);
+
+  const handleContinue = () => {
+    if (!startDate || !endDate) {
+      alert("Por favor, selecione uma data.");
+      return;
+    }
+
+    if (endDate < startDate) {
+      alert("A data final deve ser igual ou posterior à data inicial.");
+      return;
+    }
+
+    navigation.navigate("SchedulingDetails", { car });
+  };
+
+  const handleChange =
+    (type: "start" | "end") =>
+    (event: DateTimePickerEvent, selectedDate?: Date) => {
+      if (event.type === "set" && selectedDate) {
+        if (type === "start") {
+          setStartDate(selectedDate);
+        } else {
+          setEndDate(selectedDate);
+        }
+      }
+      setShowPicker(null);
+    };
+
+  return (
+    <SafeAreaView className="flex-1 bg-white">
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={{ padding: 24, flexGrow: 1, justifyContent: "center" }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Pressable onPress={() => navigation.goBack()} className="absolute top-6 left-4 z-10">
+            <Ionicons name="chevron-back" size={24} color="#dc1637" />
+          </Pressable>
+
+          <View className="space-y-6">
+            <Text className="text-2xl font-bold text-center">Selecione a Data</Text>
+
+            <Pressable
+              className="bg-gray-100 rounded-xl p-4"
+              onPress={() => setShowPicker("start")}
+            >
+              <Text className="text-sm text-gray-500 mb-1">Do dia</Text>
+              <Text className="text-base font-semibold">
+                {startDate ? startDate.toLocaleDateString("pt-BR") : "Não Selecionado"}
+              </Text>
+            </Pressable>
+
+            <Pressable
+              className="bg-gray-100 rounded-xl p-4"
+              onPress={() => setShowPicker("end")}
+            >
+              <Text className="text-sm text-gray-500 mb-1">Até o dia</Text>
+              <Text className="text-base font-semibold">
+                {endDate ? endDate.toLocaleDateString("pt-BR") : "Não Selecionado"}
+              </Text>
+            </Pressable>
+
+            {showPicker === "start" && (
+              <DateTimePicker
+                mode="date"
+                value={startDate || new Date()}
+                onChange={handleChange("start")}
+                display={Platform.OS === "ios" ? "inline" : "default"}
+                minimumDate={new Date()}
+              />
+            )}
+            {showPicker === "end" && (
+              <DateTimePicker
+                mode="date"
+                value={endDate || new Date()}
+                onChange={handleChange("end")}
+                display={Platform.OS === "ios" ? "inline" : "default"}
+                minimumDate={startDate || new Date()}
+              />
+            )}
+
+            <View className="z-50">
+              <Text className="text-sm text-gray-500 mb-2">Quanto tempo quer alugar?</Text>
+              <DropDownPicker
+                open={open}
+                value={rentalDays}
+                items={items}
+                setOpen={setOpen}
+                setValue={setRentalDays}
+                setItems={setItems}
+                placeholder="Selecione o Dia"
+                listMode="SCROLLVIEW"
+                style={{ borderColor: "#d1d5db" }}
+                dropDownContainerStyle={{ borderColor: "#d1d5db" }}
+              />
+            </View>
+
+            <Pressable className="bg-primary py-4 rounded-lg" onPress={handleContinue}>
+              <Text className="text-white text-center font-semibold text-base">Continuar</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
+  );
+};
+
+export default SchedulingScreen;
